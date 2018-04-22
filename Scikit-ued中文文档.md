@@ -1,3 +1,12 @@
+This document is translated from
+
+> http://scikit-ued.readthedocs.io/en/master/index.html
+
+THANK YOU! 
+
+
+
+
 #  Tutorials
 
 Tutorials用于基本操作，如果需要更具体的操作，请查看 Reference/API
