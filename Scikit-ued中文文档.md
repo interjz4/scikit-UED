@@ -6,6 +6,42 @@ THANK YOU!
 
 
 
+<!-- TOC -->
+
+- [Tutorials](#tutorials)
+    - [1 建立原子模型](#1-建立原子模型)
+        - [1.1 The Crystal Class](#11-the-crystal-class)
+            - [1.1.1 构造Crystal](#111-构造crystal)
+            - [1.1.2 手动构造Crystal](#112-手动构造crystal)
+            - [1.1.3 Crystal attributes](#113-crystal-attributes)
+            - [1.1.4 Lattice vectors and reciprocal space](#114-lattice-vectors-and-reciprocal-space)
+            - [1.1.5 Space-group Information](#115-space-group-information)
+            - [1.1.6 和ASE的兼容](#116-和ase的兼容)
+        - [1.2 The Atom Class](#12-the-atom-class)
+    - [2 Simulation Tutorial](#2-simulation-tutorial)
+        - [2.1 Polycrystalline 多晶衍射模拟](#21-polycrystalline-多晶衍射模拟)
+        - [2.2 Electrostatic 静电电位模拟](#22-electrostatic-静电电位模拟)
+    - [3 Baseline Tutorials](#3-baseline-tutorials)
+        - [3.1 使用离散小波变换的迭代基线确定](#31-使用离散小波变换的迭代基线确定)
+        - [3.2 使用双树复小波变换的迭代基线确定](#32-使用双树复小波变换的迭代基线确定)
+    - [4 图像分析与处理](#4-图像分析与处理)
+        - [4.1 衍射图像对齐](#41-衍射图像对齐)
+        - [4.2 涉及对称性的图像处理](#42-涉及对称性的图像处理)
+        - [4.3 Pixel Masks](#43-pixel-masks)
+            - [4.3.1 创建一个pixel mask](#431-创建一个pixel-mask)
+        - [4.4 多晶衍射图的图像分析](#44-多晶衍射图的图像分析)
+            - [4.4.1 确定中心](#441-确定中心)
+            - [4.4.2 角度分布](#442-角度分布)
+        - [4.5 Bonus:去除热点](#45-bonus去除热点)
+    - [5 Plotting Tutorial](#5-plotting-tutorial)
+        - [color](#color)
+- [Reference/API](#referenceapi)
+    - [1 Baseline-determination](#1-baseline-determination)
+        - [1.1 skued.baseline_dt](#11-skuedbaseline_dt)
+
+<!-- /TOC -->
+
+
 
 #  Tutorials
 
@@ -17,7 +53,7 @@ Tutorials用于基本操作，如果需要更具体的操作，请查看 Referen
 
 依赖于 `skued.structure`包
 
-### 1.1.1 构造Crystal
+#### 1.1.1 构造Crystal
 
 ```py
 from skued import Crystal
@@ -48,7 +84,7 @@ vo2 = Crystal.from_cod(1521124)
 old_vo2 = Crystal.from_cod(1521124, revision = 140771)
 ```
 
-### 1.1.2 手动构造Crystal
+#### 1.1.2 手动构造Crystal
 
 如果没有文件，或者想要构造一个理想化晶体，可以手动构造。
 
@@ -67,7 +103,7 @@ unitcell = [Atom('Po', coords = [0,0,0])]
 polonium = Crystal(unitcell, lattice_vectors)
 ```
 
-### 1.1.3 Crystal attributes
+#### 1.1.3 Crystal attributes
 
 首先，`Crystal`是个iterable
 
@@ -118,7 +154,7 @@ import numpy
 arr = numpy.array(Crystal.from_database('Si'))
     print(arr)
 ```
-### 1.1.4 Lattice vectors and reciprocal space
+#### 1.1.4 Lattice vectors and reciprocal space
 
 [What is the difference between lattice vectors and basis vectors (in crystallography)?](https://www.quora.com/What-is-the-difference-between-lattice-vectors-and-basis-vectors-in-crystallography)
 
@@ -142,7 +178,7 @@ vol = graphite.volume   # Angstroms cubed
 density = vol/len(graphite)
 ```
 
-### 1.1.5 Space-group Information
+#### 1.1.5 Space-group Information
 
 ```py
 # 可以通过lattice_system属性来获取the lattice system of a Lattice or Crystal instance
@@ -180,10 +216,10 @@ h, k, l = graphite.miller_indices(G) #1, 0, 0
 
 ```
 
-# 1.1.6 和ASE的兼容
+#### 1.1.6 和ASE的兼容
 
 
-# 1.2 The Atom Class
+### 1.2 The Atom Class
 
 
 
@@ -212,11 +248,11 @@ dist = silver - copper                  # distance in fractional coordinates
 
 
 
-# 2 Simulation Tutorial
+## 2 Simulation Tutorial
 
 模拟衍射部分。
 
-# 2.1 Polycrystalline 多晶衍射模拟 
+### 2.1 Polycrystalline 多晶衍射模拟 
 
 准备内容：一个`Crystal`和一个散射长度范围，s as s=sinθ/λ:
 
@@ -238,7 +274,7 @@ plt.title('Polycrystalline graphite diffraction')
 
 ```
 
-# 2.2 Electrostatic 静电电位模拟
+### 2.2 Electrostatic 静电电位模拟
 
 
 电子的散射电位是晶体的静电势，因此计算这个电势是很有用的。
@@ -268,7 +304,7 @@ potential = pelectrostatic(graphite, xx, yy)
 
 
 
-# 3 Baseline Tutorials
+## 3 Baseline Tutorials
 
 电子衍射的背景信号比X射线衍射要多很多。
 
@@ -299,7 +335,7 @@ substrate1 = 0.8 * gaussian(s, center = s.mean(), fwhm = s.mean()/4)
 substrate2 = 0.9 * gaussian(s, center = s.mean()/2.5, fwhm = s.mean()/4)
 
 ```
- ## 3.1 使用离散小波变换的迭代基线确定
+### 3.1 使用离散小波变换的迭代基线确定
 
 > Galloway et al. ‘An Iterative Algorithm for Background Removal in Spectroscopy by Wavelet Transforms’, Applied Spectroscopy pp. 1370 - 1376, September 2009.
 
@@ -322,7 +358,7 @@ baseline = baseline_dwt(signal, level = 6, max_iter = 150, wavelet = 'sym6')
 ```
 
 
-## 3.2 使用双树复小波变换的迭代基线确定
+### 3.2 使用双树复小波变换的迭代基线确定
 
 对于 1D数据，双树复小波变换比`baseline_dwt()`性能要高很多。
 
@@ -347,11 +383,11 @@ baseline = baseline_dt(signal, wavelet = 'qhisft3', level = 6, max_iter = 150))
 
 
 
-# 4 图像分析与处理
+## 4 图像分析与处理
 
 衍射图分析本质上是专门的图像处理。主要依赖于`skued.image`+`npstreams`
 
-## 4.1 衍射图像对齐
+### 4.1 衍射图像对齐
 
 衍射图样可能是几分钟内的，为了可靠的数据合成，基于参考线对齐很重要
 
@@ -408,7 +444,7 @@ im = shift_image(im, shift)
 
 
 
-## 4.2 涉及对称性的图像处理
+### 4.2 涉及对称性的图像处理
 
 
 基于晶体结构衍射图呈现旋转对称性。 我们可以利用这种对称性在出现伪像或缺陷的情况下校正图像。 一个有用的例程是nfold（），它基于旋转对称对衍射图案的各个部分进行平均。
@@ -457,40 +493,181 @@ plt.show()
 
 
 
-## 4.3 Pixel Masks
+### 4.3 Pixel Masks
 
 pixel masks 可以拒绝图像数据的单个像素。这些masks由无效像素的布尔矩阵评估为True来表示。
 
-### 4.3.1 创建一个pixel mask
+#### 4.3.1 创建一个pixel mask
+
+使用`dark_run_*.tif.`文件来展示这一系列的图像。通过`mask_from_collection()`来创建一个pixel mask.
+
+```py
+from glob import iglob
+from skued import mask_from_collection, diffread
+
+dark_runs = map(diffread, iglob('dark_run_*.tif'))    # Can be a huge stack of images
+mask = mask_from_collection(dark_runs)
+```
+
+在上例中，[0,30000]范围**内?(不确定)**的像素值将被标记为无效（默认行为）。 此外，计算图像集上的每像素标准差; 波动太大的像素也被拒绝。
+
+
+### 4.4 多晶衍射图的图像分析
+
+#### 4.4.1 确定中心
+
+多晶衍射图显示同心环，找到那些同心环的中心是重要的。
+
+```py
+from skued import diffread
+import matplotlib.pyplot as plt
+path = 'Cr_1.tif'
+
+im = diffread(path)
+mask = np.zeros_like(im, dtype = np.bool)
+mask[0:1250, 950:1250] = True
+
+im[mask] = 0
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.imshow(im, vmin = 0, vmax = 200)
+
+ax.xaxis.set_visible(False)
+ax.yaxis.set_visible(False)
+plt.show()
+```
+这个多晶二氧化钒的衍射图案非常嘈杂。 使用`powder_center()`可以找到这种对称模式的中心
+
+```py
+from skued import powder_center, diffread
+import numpy as np
+import matplotlib.pyplot as plt
+path = 'Cr_1.tif'
+im = diffread(path)
+mask = np.zeros_like(im, dtype = np.bool)
+mask[0:1250, 950:1250] = True
+ic, jc = powder_center(im, mask = mask)
+ii, jj = np.meshgrid(np.arange(im.shape[0]), np.arange(im.shape[1]),indexing = 'ij')
+rr = np.sqrt((ii - ic)**2 + (jj - jc)**2)
+im[rr < 100] = 1e6
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.imshow(im, vmin = 0, vmax = 200)
+
+ax.xaxis.set_visible(False)
+ax.yaxis.set_visible(False)
+
+plt.show()
+```
+
+#### 4.4.2 角度分布
+
+首先，创建一个测试图像：
+
+
+```py
+import numpy as np
+import matplotlib.pyplot as plt
+from skued import gaussian
+image = np.zeros( (256, 256) )
+xc, yc = image.shape[0]/2, image.shape[1]/2 # center
+extent = np.arange(0, image.shape[0])
+xx, yy = np.meshgrid(extent, extent)
+rr = np.sqrt((xx - xc)**2 + (yy-yc)**2)
+image += gaussian([xx, yy], center = [xc, yc], fwhm = 200)
+image[np.logical_and(rr < 40, rr > 38)] = 1
+image[np.logical_and(rr < 100, rr > 98)] = 0.5
+image /= image.max()        # Normalize max to 1
+image += np.random.random(size = image.shape)
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.imshow(image)
+
+ax.xaxis.set_visible(False)
+ax.yaxis.set_visible(False)
+plt.show()
+```
+
+就可以很简单的计算一个角度平均
+
+```py
+from skued import azimuthal_average
+radius, intensity = azimuthal_average(image, (xc, yc))
+plt.plot(radius, intensity)
+```
+
+### 4.5 Bonus:去除热点
+
+基线移除（在基线教程中描述）的一个有趣用例是从图像中移除热点。
+
+考虑以下衍射图案：
+
+![image-8](http://scikit-ued.readthedocs.io/en/master/_images/image-8.png)
+
+```py
+import matplotlib.pyplot as plt
+from skued import diffread
+
+im = diffread('hotspots.tif')
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.imshow(im, vmin = 0, vmax = 2e3)
+ax.xaxis.set_visible(False)
+ax.yaxis.set_visible(False)
+plt.show()
+```
+
+去除热点的代码：
+
+```py
+from skued import diffread, baseline_dwt
+
+im = diffread('hotspots.tif')
+denoised = baseline_dwt(im, max_iter = 250, level = 1, wavelet = 'sym2', axis = (0, 1))
+```
+
+尝试不同组合的小波、级别和迭代次数(max_iter)。
+
+请注意，在图像的情况下使用的基线去除函数是`baseline_dwt()`，它适用于二维数组。 `baseline_dt()`是不可能的，它只适用于一维数组。
+
+
+## 5 Plotting Tutorial
+
+时间分辨衍射测量可以从精准绘图，特别是时间连续的数据中受益。 本教程将介绍一些`skued`里使其更容易使用的功能。
+
+### color
+
+**time-order**
+
+```py
+from skued import spectrum_colors
+colors = spectrum_colors(5)
+# Colors always go from purple to red (increasing wavelength)
+purple = next(colors)
+red = list(colors)[-1]
+```
 
 
 
 
 
 
+# Reference/API
 
+## 1 Baseline-determination
 
+### 1.1 skued.baseline_dt
 
+```py
+skued.baseline_dt(array, max_iter, level=None, first_stage='sym6', wavelet='qshift1', background_regions=[], mask=None, mode='constant', axis=-1)
+```
 
+基于双树复小波变换的基线确定迭代方法。 
 
+该功能仅适用于1D。
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+参数：
+        - array (~numpy.ndarray, shape (M,N))  背景数据，可以是一维数据或者二维矩阵
+        - max_iter (int) 迭代次数
